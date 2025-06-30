@@ -53,24 +53,28 @@ def about():
     # Render the about page
     return render_template('faculty_about.html')
 
+
 @app.route('/search')
 def search():
-    # Search for faculty by name or department
-    query = request.args.get('query', '')
-    if not query.strip():
-        return redirect('/showfaculty')  # Redirect if search query is empty
+    query = request.args.get('query', '').strip()
+
+    if not query:
+        return redirect('/showfaculty')
 
     cur = mysql.connection.cursor()
+
+    # Filter by name OR title OR department
     cur.execute("""
         SELECT id, name, title, department, photo 
         FROM faculty 
-        WHERE name LIKE %s OR department LIKE %s
-    """, (f"%{query}%", f"%{query}%"))
-    
+        WHERE name LIKE %s OR title LIKE %s OR department LIKE %s
+    """, (f"%{query}%", f"%{query}%", f"%{query}%"))
+
     results = cur.fetchall()
 
-    # Render faculty list with search results (no pagination)
     return render_template('faculty_list.html', faculty=results, page=1, total_pages=1)
+
+
 @app.route('/admin_search')
 def admin_search():
     # Only allow if logged in as admin
@@ -85,8 +89,8 @@ def admin_search():
     cur.execute("""
         SELECT id, name, title, department, photo 
         FROM faculty 
-        WHERE name LIKE %s OR department LIKE %s
-    """, (f"%{query}%", f"%{query}%"))
+        WHERE name LIKE %s OR title LIKE %s OR department LIKE %s
+    """, (f"%{query}%", f"%{query}%", f"%{query}%"))
     
     results = cur.fetchall()
 
