@@ -1,0 +1,281 @@
+/* Updated Faculty Profile, Rating & Feedback CSS */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(to right, #003366, #0055a5);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 5px solid #ffcc00;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.logo img {
+  border-radius: 8px;
+}
+
+.logo p {
+  max-width: 600px;
+  font-size: 14px;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin-top: 20px;
+}
+
+nav ul li {
+  margin: 0 15px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+nav ul li a:hover {
+  background: #ffcc00;
+  color: #003366;
+}
+
+.profile {
+  width: 80%;
+  max-width: 800px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profile h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.profile img {
+  float: left;
+  width: 120px;
+  height: 150px;
+  border-radius: 8px;
+  margin-right: 20px;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.profile p {
+  font-size: 16px;
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+.profile strong {
+  display: inline-block;
+  width: 90px;
+  font-weight: 600;
+}
+
+.profile a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #0074D9;
+  text-decoration: none;
+}
+
+.profile a:hover {
+  text-decoration: underline;
+}
+
+.rating-section {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 30px auto;
+  width: 80%;
+}
+
+.rating-section h2 {
+  margin-bottom: 10px;
+}
+
+.rating-section select,
+.rating-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.rating-section button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #0074D9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rating-section button:hover {
+  background: #005fa3;
+}
+
+.average-rating {
+  width: 80%;
+  margin: 20px auto;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.ratings-list {
+  width: 80%;
+  margin: 30px auto;
+}
+
+.rating-entry {
+  background: #eef6fb;
+  padding: 15px;
+  border-left: 4px solid #0074D9;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.feedback-section {
+  background: #f9f9f9;
+  padding: 20px;
+  margin: 30px auto;
+  width: 80%;
+  border-radius: 10px;
+}
+
+.feedback-section h2 {
+  margin-bottom: 10px;
+}
+
+.feedback-section input[type="text"],
+.feedback-section textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.feedback-section button {
+  padding: 10px 20px;
+  background: #0074D9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.feedback-section button:hover {
+  background: #005fa3;
+}
+
+.feedback-list {
+  background: #fff;
+  padding: 20px;
+  margin: 30px auto;
+  width: 80%;
+  border-radius: 10px;
+}
+
+.feedback-list h2 {
+  margin-bottom: 20px;
+}
+
+.feedback-entry {
+  border-left: 4px solid #0074D9;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #f0f8ff;
+  border-radius: 5px;
+}
+
+.feedback-entry strong {
+  font-size: 16px;
+}
+
+.feedback-entry p {
+  margin-top: 5px;
+}
+
+.feedback-entry small {
+  float: right;
+  font-size: 12px;
+  color: #777;
+}
+
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.video-background video {
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+footer {
+  background: #003366;
+  color: white;
+  padding: 20px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+footer a {
+  color: #ffcc00;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .profile img {
+    float: none;
+    display: block;
+    margin: 0 auto 20px auto;
+  }
+  .profile {
+    text-align: center;
+  }
+}

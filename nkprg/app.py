@@ -40,13 +40,66 @@ def show_faculty():
     # Render faculty list template with pagination data
     return render_template('faculty_list.html', faculty=faculty_list, page=page, total_pages=total_pages)
 
-@app.route('/faculty/<int:id>')
+@app.route('/faculty/<int:id>', methods=['GET', 'POST'])
 def view_profile(id):
-    # Display detailed profile for a specific faculty member
     cur = mysql.connection.cursor()
+
+    # If form submitted, handle feedback OR rating
+    if request.method == 'POST':
+        name = request.form.get('name') or "Anonymous"
+        comment = request.form.get('comment')
+        stars = request.form.get('stars')
+
+        # If stars are given, it's a rating
+        if stars:
+            stars = int(stars)
+            if 1 <= stars <= 5:
+                cur.execute(
+                    "INSERT INTO ratings (faculty_id, stars, comment) VALUES (%s, %s, %s)",
+                    (id, stars, comment)
+                )
+                mysql.connection.commit()
+        # Otherwise treat as feedback only
+        elif comment:
+            cur.execute(
+                "INSERT INTO feedback (faculty_id, name, comment) VALUES (%s, %s, %s)",
+                (id, name, comment)
+            )
+            mysql.connection.commit()
+
+    # Get faculty info
     cur.execute("SELECT * FROM faculty WHERE id = %s", (id,))
     faculty = cur.fetchone()
-    return render_template('faculty_profile.html', faculty=faculty)
+
+    # Get feedback list
+    cur.execute("SELECT name, comment, timestamp FROM feedback WHERE faculty_id = %s ORDER BY timestamp DESC", (id,))
+    feedback_rows = cur.fetchall()
+    feedback_list = [
+        {'name': row[0], 'comment': row[1], 'timestamp': row[2]}
+        for row in feedback_rows
+    ]
+
+    # Get average rating
+    cur.execute("SELECT AVG(stars) FROM ratings WHERE faculty_id = %s", (id,))
+    avg_rating = cur.fetchone()[0]
+
+    # Get all ratings
+    cur.execute("SELECT stars, comment, timestamp FROM ratings WHERE faculty_id = %s ORDER BY timestamp DESC", (id,))
+    ratings_rows = cur.fetchall()
+    ratings_list = [
+        {'stars': row[0], 'comment': row[1], 'timestamp': row[2]}
+        for row in ratings_rows
+    ]
+
+    return render_template(
+        'faculty_profile.html',
+        faculty=faculty,
+        feedback_list=feedback_list,
+        avg_rating=round(avg_rating or 0, 1),
+        ratings_list=ratings_list
+    )
+
+
 
 @app.route('/about')
 def about():
@@ -129,25 +182,30 @@ def add_faculty():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Admin login page
     error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # Simple admin authentication (hardcoded)
+        # Hardcoded admin check
         if username == 'admin' and password == 'admin123':
-            session['admin'] = True  # Set admin session
+            session['admin'] = True
             return redirect('/admin_dashboard')
+
+        # Faculty or Student check from database
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id, username, password, role FROM users WHERE username = %s", (username,))
+        user = cur.fetchone()
+
+        if user and password == user[2]:  # If you use hashing, check with hash instead
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            session['role'] = user[3]
+            return redirect('/showfaculty')  # After login, go to faculty list
         else:
             error = 'Invalid credentials'
     return render_template('login.html', error=error)
 
-@app.route('/logout')
-def logout():
-    # Log out the current user (clear session)
-    session.clear()
-    return redirect('/login')
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
@@ -199,6 +257,28 @@ def delete_faculty(id):
     cur.execute("DELETE FROM faculty WHERE id = %s", (id,))
     mysql.connection.commit()
     return redirect('/admin_dashboard')
+
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    message = ''
+    if request.method == 'POST':
+        email = request.form['email']
+
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id FROM users WHERE username = %s", (email,))
+        user = cur.fetchone()
+
+        if user:
+            temp_password = "Admin@123"  # Replace with secure generation in production
+            cur.execute("UPDATE users SET password = %s WHERE username = %s", (temp_password, email))
+            mysql.connection.commit()
+            message = f"A temporary password has been set to '{temp_password}'. Please login and change it."
+        else:
+            message = "Email not found in system."
+        cur.close()
+
+    return render_template('forgot_password.html', message=message)
 
 if __name__ == '__main__':
     # Run the Flask app in debug mode

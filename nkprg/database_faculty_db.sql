@@ -95,5 +95,31 @@ Research Experience: 11 years', 'sasikumar.jpg');
 INSERT INTO faculty (id, name, title, department, email, phone, bio, photo) VALUES (9, 'DR S KISHORE KUMAR', 'DEPUTY LIBRARIAN', 'CENTRAL LIBRARY', 'kishore@yahoo.com', '9444138098', 'Academic Qualifications : M.Sc., B.Ed, M.L.I.Sc, M.Phil, PGDLAN, Ph.D. 
 Total Teaching
 Experience : Years - 27', 'kishore.jpg');
+CREATE TABLE feedback (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    faculty_id INT NOT NULL,
+    name VARCHAR(100),
+    comment TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (faculty_id) REFERENCES faculty(id) ON DELETE CASCADE
+);
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('faculty', 'student') NOT NULL
+);
+INSERT INTO users (username, password, role) VALUES ('faculty1', 'pass123', 'faculty');
+INSERT INTO users (username, password, role) VALUES ('student1', 'pass123', 'student');
+CREATE TABLE ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    faculty_id INT NOT NULL,
+    stars INT CHECK (stars BETWEEN 1 AND 5),
+    comment TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (faculty_id) REFERENCES faculty(id) ON DELETE CASCADE
+);
+
+
 
 
